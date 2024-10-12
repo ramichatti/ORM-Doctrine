@@ -1,0 +1,16 @@
+{% block title %}Add a New Book{% endblock %}
+
+{% block body %}
+    <h1>Add a New Book</h1>
+
+    {{ form_start(form) }}
+        {{ form_row(form.title) }}               {# Champ pour le titre du livre #}
+        {{ form_row(form.publicationDate) }}     {# Champ pour la date de publication #}
+        {{ form_row(form.enabled) }}              {# Case à cocher pour "Published" #}
+        {{ form_row(form.category) }}             {# Sélecteur pour la catégorie #}
+        {{ form_row(form.author) }}               {# Sélecteur pour l'auteur #}
+
+        {# Le bouton de soumission sera ici #}
+        {{ form_row(form.submit) }}               {# Bouton pour soumettre le formulaire #}
+    {{ form_end(form) }}
+{% endblock %}

@@ -1,0 +1,30 @@
+
+<h1>Published Books</h1>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Publication Date</th>
+                    <th>Author</th>
+                    <th>Enable</th>
+                    <th>Category</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for book in books %}
+                    <tr>
+                        <td>{{ book.title }}</td>
+                        <td>{{ book.publicationDate ? book.publicationDate|date('Y-m-d') : 'N/A' }}</td>
+                        <td>{{ book.author.username }}</td> {# Assuming username is the property you want to display #}
+                        <td>{{ book.enabled }}</td>
+                        <td>{{ book.category }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+<p>Total Books: {{ totalBooks }}</p>
+<p>Published Books: {{ publishedCount }}</p>
+<p>Unpublished Books: {{ unpublishedCount }}</p>
+   
+<a href="{{ path('book_new') }}" class="btn btn-primary">Add New Book</a>
