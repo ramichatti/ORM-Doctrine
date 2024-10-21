@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request; // <-- Ajoute cette ligne
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\BookRepository;
+use App\Form\SearchByDateType;
 
 class BookController extends AbstractController
 {
@@ -50,24 +51,40 @@ class BookController extends AbstractController
     }
 
     #[Route('/books/published', name: 'books_published')]
-    public function listPublishedBooks(BookRepository $bookRepository): Response
-    {
-        // Récupérer les livres publiés (enabled = true)
-        $publishedBooks = $bookRepository->findBy(['enabled' => true]);
+public function listPublishedBooks(BookRepository $bookRepository, Request $request): Response
+{
+    // Récupérer les livres publiés (enabled = true)
+    $publishedBooks = $bookRepository->findBy(['enabled' => true]);
 
-        // Compter le nombre total de livres
-        $totalBooks = $bookRepository->count([]);
-        // Compter le nombre de livres publiés
-        $publishedCount = count($publishedBooks);
-        // Calculer le nombre de livres non publiés
-        $unpublishedCount = $totalBooks - $publishedCount;
+    // Compter le nombre total de livres
+    $totalBooks = $bookRepository->count([]);
+    // Compter le nombre de livres publiés
+    $publishedCount = count($publishedBooks);
+    // Calculer le nombre de livres non publiés
+    $unpublishedCount = $totalBooks - $publishedCount;
 
-        return $this->render('book/published_books.html.twig', [
-            'books' => $publishedBooks,
-            'publishedCount' => $publishedCount,
-            'unpublishedCount' => $unpublishedCount,
-            'totalBooks' => $totalBooks,
-        ]);
+    $form = $this->createForm(SearchByDateType::class);
+    $form->handleRequest($request);
+
+    $books = null; // Initialisation de $books
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        $date1 = $form->get('startDate')->getData();
+        $date2 = $form->get('endDate')->getData();
+
+        // Assurez-vous d'utiliser le bon repository pour récupérer les livres par date
+        $books = $bookRepository->getBooksByDate($date1, $date2);
     }
+
+    return $this->render('book/published_books.html.twig', [
+        'books' => $publishedBooks,
+        'publishedCount' => $publishedCount,
+        'unpublishedCount' => $unpublishedCount,
+        'totalBooks' => $totalBooks,
+        'bookdate' => $books, // Afficher les livres filtrés par date
+        'form' => $form->createView(),
+    ]);
+}
+
 
 }

@@ -24,6 +24,7 @@ class AuthorType extends AbstractType
                 'label' => 'Email',
                 'attr' => ['class' => 'form-control'],
             ]);
+            //->add('Add author', SubmitType::class)
     }
 
     public function configureOptions(OptionsResolver $resolver)

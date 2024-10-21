@@ -40,4 +40,27 @@ class BookRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function getBooksByAuthor($author): array
+       {
+           return $this->createQueryBuilder('b')
+               ->join('b.author','a')
+               ->addSelect('a')
+               ->where('a.id = ?1')
+               ->SetParamter('1',$author)
+               ->getQuery()
+               ->getResult()
+           ;
+       }
+
+       public function getBooksByDate($date1, $date2): array
+{
+    return $this->createQueryBuilder('b')
+        ->where('b.publicationDate BETWEEN :startDate AND :endDate')
+        ->setParameter('startDate', $date1)   // Correction de SetParamter en setParameter
+        ->setParameter('endDate', $date2)     // Même correction ici
+        ->getQuery()
+        ->getResult();
+}
+
 }

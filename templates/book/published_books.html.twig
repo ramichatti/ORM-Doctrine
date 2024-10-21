@@ -1,30 +1,44 @@
+<h1>Rechercher des auteurs par date</h1>
+
+{{ form_start(form) }}
+    <div>
+        {{ form_row(form.startDate) }} <!-- Date de début -->
+        {{ form_row(form.endDate) }} <!-- Date de fin -->
+    </div>
+{{ form_end(form) }}
 
 <h1>Published Books</h1>
-        <table border="1">
-            <thead>
+<table border="1">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Publication Date</th>
+            <th>Author</th>
+            <th>Enable</th>
+            <th>Category</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if books is not empty %}
+            {% for book in bookdate %}
                 <tr>
-                    <th>Title</th>
-                    <th>Publication Date</th>
-                    <th>Author</th>
-                    <th>Enable</th>
-                    <th>Category</th>
+                    <td>{{ book.title }}</td>
+                    <td>{{ book.publicationDate ? book.publicationDate|date('Y-m-d') : 'N/A' }}</td>
+                    <td>{{ book.author.username }}</td> {# Assurez-vous que l'auteur a une propriété 'username' #}
+                    <td>{{ book.enabled ? 'Yes' : 'No' }}</td> {# Afficher 'Yes' ou 'No' en fonction de l'état de 'enabled' #}
+                    <td>{{ book.category }}</td>
                 </tr>
-            </thead>
-            <tbody>
-                {% for book in books %}
-                    <tr>
-                        <td>{{ book.title }}</td>
-                        <td>{{ book.publicationDate ? book.publicationDate|date('Y-m-d') : 'N/A' }}</td>
-                        <td>{{ book.author.username }}</td> {# Assuming username is the property you want to display #}
-                        <td>{{ book.enabled }}</td>
-                        <td>{{ book.category }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="5">Aucun livre trouvé.</td>
+            </tr>
+        {% endif %}
+    </tbody>
+</table>
 
 <p>Total Books: {{ totalBooks }}</p>
 <p>Published Books: {{ publishedCount }}</p>
 <p>Unpublished Books: {{ unpublishedCount }}</p>
-   
+
 <a href="{{ path('book_new') }}" class="btn btn-primary">Add New Book</a>
